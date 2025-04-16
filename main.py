@@ -18,6 +18,28 @@ def ingenuo(img, windowSize):
     cv2.imshow('teste_blur', img2)
     cv2.waitKey()
     cv2.destroyAllWindows()
+    
+def segmentacao(img, windowSize):
+    rows, cols, channels = img.shape
+    img_s = img.copy()
+    img_s2 = img.copy()
+    altura, largura = windowSize, windowSize
+    
+    for row in range(rows):
+        for col in range(largura // 2, cols - largura // 2):
+            soma = 0
+            for x in range(col - (largura // 2), col + (largura // 2)):
+                soma += img[row, x]
+            img_s[row,col] = soma / altura
+    cv2.imshow('segmentacao_parte1', img_s)
+    
+    for col in range(largura // 2, cols - (largura // 2)):
+        for row in range(altura // 2, rows - altura // 2):
+            soma = 0
+            for x in range(row - (altura // 2), row + (altura // 2)):
+                soma += img_s[x, col]
+            img_s2[row,col] = soma / altura
+    cv2.imshow('segmentacao_parte2', img_s2)
 
 def main():
     img = cv2.imread("a01 - Original.bmp")
@@ -27,7 +49,7 @@ def main():
         
     img = img.astype (np.float32) / 255
     
-    ingenuo(img, 13)
+    segmentacao(img, 13)
     
     cv2.imshow('teste', img)
     cv2.waitKey()
