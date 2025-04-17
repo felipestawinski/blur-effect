@@ -40,6 +40,21 @@ def segmentacao(img, windowSize):
                 soma += img_s[x, col]
             img_s2[row,col] = soma / altura
     cv2.imshow('segmentacao_parte2', img_s2)
+    
+def integral(img, windowSize):
+    rows, cols, channels = img.shape
+    img_integral = img.copy()
+    
+    for row in range(rows):
+        for col in range(1, cols):
+            img_integral[row, col] = img[row, col] + img_integral[row, col-1]
+        
+    for row in range(1, rows):
+        for col in range(cols):
+            img_integral[row, col] = img[row, col] + img_integral[row-1, col]
+            
+    cv2.imshow('img_integral', img_integral)
+    
 
 def main():
     img = cv2.imread("a01 - Original.bmp")
@@ -49,7 +64,7 @@ def main():
         
     img = img.astype (np.float32) / 255
     
-    segmentacao(img, 13)
+    integral(img, 13)
     
     cv2.imshow('teste', img)
     cv2.waitKey()
