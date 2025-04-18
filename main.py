@@ -46,21 +46,22 @@ def integral(img, windowSize):
     img_integral = img.copy()
     img_blur = img.copy()
     
+    
     for row in range(rows):
         for col in range(1, cols):
             img_integral[row, col] = img[row, col] + img_integral[row, col-1]
         
     for row in range(1, rows):
         for col in range(cols):
-            img_integral[row, col] = img[row, col] + img_integral[row-1, col]
+            img_integral[row, col] = img_integral[row, col] + img_integral[row-1, col]
     
     w_size = windowSize // 2
     for row in range(windowSize // 2, rows - windowSize // 2):
         for col in range(windowSize // 2, cols - windowSize // 2):
-            val = (img_integral[row+w_size, col+w_size] + 
-                   img_integral[row+w_size, col] + 
-                   img_integral[row, col+w_size] -
-                   img_integral[row,col]) // (windowSize*windowSize)
+            val = ((img_integral[row+w_size, col+w_size] -
+                   img_integral[row+w_size, col-w_size] -
+                   img_integral[row-w_size, col+w_size] +
+                   img_integral[row-w_size,col-w_size]) / (windowSize*windowSize))
             
             img_blur[row,col] = val
             
