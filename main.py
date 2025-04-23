@@ -14,8 +14,11 @@ def ingenuo(img, windowSize):
                 for y in range(col - (largura // 2), col + (largura // 2)):
                     soma += img[x, y]
             img2[row, col] = soma / (altura * largura)
-            
-    cv2.imshow('teste_blur', img2)
+    
+    ksize = (windowSize, windowSize)
+    opencv_img = cv2.blur(img, ksize)
+    cv2.imshow('opencv_img', opencv_img)          
+    cv2.imshow('ingenuo', img2)
     cv2.waitKey()
     cv2.destroyAllWindows()
     
@@ -39,7 +42,14 @@ def segmentacao(img, windowSize):
             for x in range(row - (altura // 2), row + (altura // 2)):
                 soma += img_s[x, col]
             img_s2[row,col] = soma / altura
+    
+    ksize = (windowSize, windowSize)
+    opencv_img = cv2.blur(img, ksize)
+    cv2.imshow('opencv_img', opencv_img)  
     cv2.imshow('segmentacao_parte2', img_s2)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
+     
     
 def integral(img, windowSize):
     rows, cols, channels = img.shape
@@ -65,22 +75,45 @@ def integral(img, windowSize):
             
             img_blur[row,col] = val
             
+    ksize = (windowSize, windowSize)
+    opencv_img = cv2.blur(img, ksize)
+    cv2.imshow('opencv_img', opencv_img)        
     cv2.imshow('img_blur', img_blur)
+    cv2.waitKey()
+    cv2.destroyAllWindows() 
     
 
 def main():
-    img = cv2.imread("a01 - Original.bmp")
+    img = cv2.imread("b01 - Original.bmp")
     if img is None:
         print(f"Erro ao abrir a imagem")
         sys.exit()
         
     img = img.astype (np.float32) / 255
     
-    integral(img, 13)
+    blur_func = int(input("Qual função para obter o filtro da média voce deseja usar?\n1 - Ingenuo\n2 - Segmentação\n3 - Integral\n"))
+    windowSize = int(input("Qual o tamanho da janela? "))
     
-    cv2.imshow('teste', img)
-    cv2.waitKey()
-    cv2.destroyAllWindows()
+    while windowSize % 2 == 0:
+        print("Tamanho da janela deve ser impar")
+        windowSize = int(input("Qual o tamanho da janela? "))
+    
+    
+    if blur_func == 1:
+        print("Usando Ingenuo...")
+        ingenuo(img, windowSize)
+    elif blur_func == 2:
+        print("Usando Segmentação...")
+        segmentacao(img, windowSize)
+        
+    elif blur_func == 3:
+        print("Usando a Imagem Integral...")
+        integral(img, windowSize)
+    else:
+        print("Opção inválida")
+        sys.exit()
+    
+    
     
 if __name__ == "__main__":
     main()
