@@ -10,8 +10,8 @@ def ingenuo(img, windowSize):
     for row in range(altura // 2, rows - altura // 2):
         for col in range(largura // 2, cols - largura // 2):
             soma = 0
-            for x in range(row - (altura // 2), row + (altura // 2)):
-                for y in range(col - (largura // 2), col + (largura // 2)):
+            for x in range(row - (altura // 2), row + (altura // 2)+1):
+                for y in range(col - (largura // 2), col + (largura // 2)+1):
                     soma += img[x, y]
             img2[row, col] = soma / (altura * largura)
     
@@ -29,17 +29,17 @@ def segmentacao(img, windowSize):
     altura, largura = windowSize, windowSize
     
     for row in range(rows):
-        for col in range(largura // 2, cols - largura // 2):
+        for col in range(largura // 2, cols - (largura // 2)):
             soma = 0
-            for x in range(col - (largura // 2), col + (largura // 2)):
+            for x in range(col - (largura // 2), col + (largura // 2) + 1):
                 soma += img[row, x]
             img_s[row,col] = soma / altura
     cv2.imshow('segmentacao_parte1', img_s)
     
     for col in range(largura // 2, cols - (largura // 2)):
-        for row in range(altura // 2, rows - altura // 2):
+        for row in range(altura // 2, rows - (altura // 2)):
             soma = 0
-            for x in range(row - (altura // 2), row + (altura // 2)):
+            for x in range(row - (altura // 2), row + (altura // 2) + 1):
                 soma += img_s[x, col]
             img_s2[row,col] = soma / altura
     
@@ -66,12 +66,12 @@ def integral(img, windowSize):
             img_integral[row, col] = img_integral[row, col] + img_integral[row-1, col]
     
     w_size = windowSize // 2
-    for row in range(windowSize // 2, rows - windowSize // 2):
-        for col in range(windowSize // 2, cols - windowSize // 2):
+    for row in range(w_size, rows - w_size):
+        for col in range(w_size, cols - w_size):
             val = ((img_integral[row+w_size, col+w_size] -
-                   img_integral[row+w_size, col-w_size] -
-                   img_integral[row-w_size, col+w_size] +
-                   img_integral[row-w_size,col-w_size]) / (windowSize*windowSize))
+                   img_integral[row+w_size, col-w_size-1] -
+                   img_integral[row-w_size-1, col+w_size] +
+                   img_integral[row-w_size-1,col-w_size-1]) / (windowSize*windowSize))
             
             img_blur[row,col] = val
             
