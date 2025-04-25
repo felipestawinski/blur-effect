@@ -64,34 +64,27 @@ def integral(img, windowSize):
     for row in range(1, rows):
         for col in range(cols):
             img_integral[row, col] = img_integral[row, col] + img_integral[row-1, col]
-    
-    # w_size = windowSize // 2
-    # for row in range(w_size+1, rows - w_size):
-    #     for col in range(w_size+1, cols - w_size):
-    #         val = ((img_integral[row+w_size, col+w_size] -
-    #                img_integral[row+w_size, col-w_size-1] -
-    #                img_integral[row-w_size-1, col+w_size] +
-    #                img_integral[row-w_size-1,col-w_size-1]) / (windowSize*windowSize))
-            
-    #         img_blur[row,col] = val
+
     
             
     w_size = windowSize // 2
     for row in range(rows):
         for col in range(cols):
+            altura, largura = windowSize, windowSize
+            x1 = max(0, row - w_size)
+            y1 = max(0, col - w_size)
+            x2 = min(rows - 1, row + w_size)
+            y2 = min(cols - 1, col + w_size)
             
-            a = (img_integral[row+w_size if row+w_size < rows - 1 else rows-1, col+w_size if col+w_size < cols - 1 else cols-1]) # baixo direita
-            b = (img_integral[row+w_size if row+w_size < rows - 1 else rows-1, col-w_size-1 if col-w_size-1 > 0 else 0]) # baixo esquerda
-            c = (img_integral[row-w_size-1 if row-w_size-1 > 0 else 0 , col+w_size if col+w_size < cols - 1 else cols - 1]) # cima direita
-            d = (img_integral[row-w_size-1 if row-w_size-1 > 0 else 0 ,col-w_size-1 if col-w_size-1 > 0 else 0]) # cima esquerda
+            area = (x2 - x1 + 1) * (y2 - y1 + 1)
             
-            if row + w_size > rows:
-                
-            if row - w_size < 0:
-            if col + w_size > cols:
-            if col - w_size < 0:   
+            bottom_right = img_integral[x2, y2]
+            bottom_left = img_integral[x2, y1-1] if y1 > 0 else 0
+            top_right = img_integral[x1-1, y2] if x1 > 0 else 0
+            top_left = img_integral[x1-1, y1-1] if (x1 > 0 and y1 > 0) else 0
             
-            val = (a - b - c + d) / (windowSize*windowSize)
+            sum_val = bottom_right - bottom_left - top_right + top_left  
+            val = sum_val / area
             
             img_blur[row,col] = val
             
@@ -111,29 +104,27 @@ def main():
         
     img = img.astype (np.float32) / 255
     
-    # blur_func = int(input("Qual função para obter o filtro da média voce deseja usar?\n1 - Ingenuo\n2 - Segmentação\n3 - Integral\n"))
-    # windowSize = int(input("Qual o tamanho da janela? "))
+    blur_func = int(input("Qual função para obter o filtro da média voce deseja usar?\n1 - Ingenuo\n2 - Segmentação\n3 - Integral\n"))
+    windowSize = int(input("Qual o tamanho da janela? "))
     
-    # while windowSize % 2 == 0:
-    #     print("Tamanho da janela deve ser impar")
-    #     windowSize = int(input("Qual o tamanho da janela? "))
+    while windowSize % 2 == 0:
+        print("Tamanho da janela deve ser impar")
+        windowSize = int(input("Qual o tamanho da janela? "))
     
     
-    # if blur_func == 1:
-    #     print("Usando Ingenuo...")
-    #     ingenuo(img, windowSize)
-    # elif blur_func == 2:
-    #     print("Usando Segmentação...")
-    #     segmentacao(img, windowSize)
+    if blur_func == 1:
+        print("Usando Ingenuo...")
+        ingenuo(img, windowSize)
+    elif blur_func == 2:
+        print("Usando Segmentação...")
+        segmentacao(img, windowSize)
         
-    # elif blur_func == 3:
-    #     print("Usando a Imagem Integral...")
-    #     integral(img, windowSize)
-    # else:
-    #     print("Opção inválida")
-    #     sys.exit()
-    
-    integral(img, 13)
+    elif blur_func == 3:
+        print("Usando a Imagem Integral...")
+        integral(img, windowSize)
+    else:
+        print("Opção inválida")
+        sys.exit()
     
 if __name__ == "__main__":
     main()
